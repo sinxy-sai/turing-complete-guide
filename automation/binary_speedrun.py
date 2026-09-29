@@ -170,6 +170,21 @@ def read_level_dialog(box: Box) -> int | None:
     return reached_level(ocr(capture(box)))
 
 
+def timeout_page(box: Box) -> bool:
+    """Return whether the game is showing its timeout page."""
+    image = capture(box)
+    orange_pixels = 0
+    for y in range(round(box.height * 0.36), round(box.height * 0.48)):
+        for x in range(round(box.width * 0.44), round(box.width * 0.56)):
+            red, green, blue = image.getpixel((x, y))[:3]
+            orange_pixels += red > 180 and 70 < green < 210 and blue < 130 and red > green * 1.15
+    if orange_pixels < 3000:
+        return False
+
+    text = normalize_digits(ocr(box.crop(image, 0.25, 0.22, 0.75, 0.60)))
+    return "时间到" in text
+
+
 def click(box: Box, x_ratio: float, y_ratio: float) -> None:
     pyautogui.click(*box.point(x_ratio, y_ratio))
 
@@ -215,6 +230,10 @@ def main() -> None:
         time.sleep(0.30)
 
     for round_number in range(1, 10_000):
+        if timeout_page(box):
+            print("Detected timeout page; stopped without restarting.")
+            return
+
         level = read_level_dialog(box)
         if level is not None:
             print(f"Detected result dialog: level {level}; stopped without Continue.")
@@ -223,11 +242,17 @@ def main() -> None:
         number = None
         prompt_text = ""
         for _ in range(20):
+            if timeout_page(box):
+                print("Detected timeout page; stopped without restarting.")
+                return
             prompt_text, number = read_number(box)
             if number is not None:
                 break
             time.sleep(0.12)
         if number is None:
+            if timeout_page(box):
+                print("Detected timeout page; stopped without restarting.")
+                return
             raise RuntimeError(f"OCR could not read the prompt. OCR text was: {prompt_text!r}")
 
         bits = format(number, "08b")
@@ -237,8 +262,11 @@ def main() -> None:
 
         solve(box, number)
         time.sleep(0.18)
+        if timeout_page(box):
+            print("Detected timeout page; stopped without restarting.")
+            return
         level = read_level_dialog(box)
-        if level is not None and level >= args.stop_at_level:
+        if level is not None:
             print(f"Reached level {level}; stopped without Continue.")
             return
 

@@ -54,4 +54,4 @@ Tesseract 会安装到项目内 `.tools\tesseract`，并下载 `chi_sim` 中文�
 - `chi_sim.traineddata`：识别中文等级结果弹窗。
 - OpenCV：当前版本不需要，数字区域使用 Pillow 的颜色分割预处理。
 
-详细流程和技术设计见 [`docs/binary-speedrun.md`](../docs/binary-speedrun.md)。
+超时页面出现时脚本会立即停止，不会点击“开始”或重新启动。详细流程和技术设计见 [`docs/binary-speedrun.md`](../docs/binary-speedrun.md)。
