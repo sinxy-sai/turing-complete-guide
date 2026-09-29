@@ -1,53 +1,57 @@
 # Turing Complete 二进制速算自动化
 
-脚本直接使用成熟库完成窗口定位、截图、点击和 OCR：`pygetwindow`、`pyautogui`、`Pillow`、`pytesseract`。识别到等级结果弹窗后会停止，不会点击“继续”。
+脚本使用 `pygetwindow`、`pyautogui`、`Pillow` 和 `pytesseract`，自动读取题目数字、选择 8 位按钮、提交答案，并在检测到等级结果弹窗后停止，不点击“继续”。
 
-项目使用根目录 `.venv` 管理依赖。首次初始化并安装：
+## 初始化
+
+项目依赖统一安装到根目录 `.venv`：
 
 ```powershell
 .\automation\setup.ps1
-```
-
-安装项目内的 Tesseract OCR：
-
-```powershell
 .\automation\install-tesseract.ps1
 ```
 
-它会安装到 `.tools\tesseract`，并下载中文简体 OCR 数据。Python 脚本会自动优先使用项目内的版本。也可以手动指定其他路径：
+Tesseract 会安装到项目内 `.tools\tesseract`，并下载 `chi_sim` 中文语言数据。脚本会自动优先使用项目内的 `tesseract.exe`。
+
+## 运行
+
+准备界面显示“准备好了吗？”时，运行：
 
 ```powershell
-.\.venv\Scripts\python.exe .\automation\binary_speedrun.py --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe"
+.\automation\run.ps1 --fullscreen --wait-seconds 5
 ```
 
-游戏已打开时运行：
+脚本会尝试激活独立 App；如果当前环境无法读取窗口标题，会倒计时 5 秒，请点击任务栏最右侧的 Turing Complete 图标。随后脚本自动点击“开始”。
 
-```powershell
-.\automation\run.ps1
-```
-
-如果窗口标题无法被 Python 读取，但游戏已经全屏显示，运行：
+已经进入题目界面时，跳过“开始”：
 
 ```powershell
 .\automation\run.ps1 --fullscreen --no-start --wait-seconds 5
 ```
 
-脚本会先尝试自动切到独立 App；找不到窗口标题时才倒计时，期间请点击任务栏最右侧图标切到游戏。默认会点击准备界面的“开始”；如果已经显示题目，再加 `--no-start`。数字识别只提取题目中橙色的目标数字，避免把“第 1 级”和倒计时一起识别。
-
-如果已经手动点击“开始”：
+第一次建议只测试识别、不点击：
 
 ```powershell
-.\automation\run.ps1 --no-start
+.\automation\run.ps1 --fullscreen --no-start --dry-run --wait-seconds 5
 ```
 
-建议先做只识别、不点击的测试：
+如果 Python 能读取游戏窗口标题，也可以不使用全屏模式：
 
 ```powershell
-.\automation\run.ps1 --no-start --dry-run
+.\automation\run.ps1
 ```
 
-脚本按窗口比例使用你提供的布局坐标，支持窗口尺寸变化。默认匹配窗口标题中的 `Turing Complete` 或 `二进制速算`；如果独立 App 的标题不同，可指定：
+标题不同可以手动指定：
 
 ```powershell
 .\automation\run.ps1 --window-title "你的窗口标题" --no-start --dry-run
 ```
+
+## 依赖说明
+
+- `.venv`：Python 虚拟环境，不污染系统 Python。
+- `.tools\tesseract`：项目内 OCR 引擎，不污染系统 PATH。
+- `chi_sim.traineddata`：识别中文等级结果弹窗。
+- OpenCV：当前版本不需要，数字区域使用 Pillow 的颜色分割预处理。
+
+详细流程和技术设计见 [`docs/binary-speedrun.md`](../docs/binary-speedrun.md)。
