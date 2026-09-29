@@ -51,6 +51,23 @@ def full_screen_box() -> Box:
     return Box(0, 0, width, height)
 
 
+def select_game_box(title_hint: str | None, fullscreen: bool, wait_seconds: float) -> Box:
+    if not fullscreen:
+        _, box = find_game_window(title_hint)
+        return box
+
+    try:
+        _, box = find_game_window(title_hint)
+        print("已找到并切换到 Turing Complete 窗口。")
+        return box
+    except RuntimeError:
+        box = full_screen_box()
+        if wait_seconds > 0:
+            print(f"未找到窗口标题，请在 {wait_seconds:g} 秒内切到游戏窗口…")
+            time.sleep(wait_seconds)
+        return box
+
+
 def ocr(image) -> str:
     return pytesseract.image_to_string(image, lang="eng+chi_sim", config="--psm 6")
 
@@ -191,16 +208,10 @@ def main() -> None:
     configure_tesseract(args.tesseract_cmd)
     pyautogui.PAUSE = 0.03
     pyautogui.FAILSAFE = True
-    if args.fullscreen:
-        box = full_screen_box()
-        if args.wait_seconds > 0:
-            print(f"请在 {args.wait_seconds:g} 秒内切到游戏窗口…")
-            time.sleep(args.wait_seconds)
-    else:
-        _, box = find_game_window(args.window_title)
+    box = select_game_box(args.window_title, args.fullscreen, args.wait_seconds)
 
     if not args.no_start:
-        click(box, 0.500, 0.375)
+        click(box, 0.500, 0.420)
         time.sleep(0.30)
 
     for round_number in range(1, 10_000):
