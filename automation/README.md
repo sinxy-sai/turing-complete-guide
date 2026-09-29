@@ -52,6 +52,6 @@ Tesseract 会安装到项目内 `.tools\tesseract`，并下载 `chi_sim` 中文�
 - `.venv`：Python 虚拟环境，不污染系统 Python。
 - `.tools\tesseract`：项目内 OCR 引擎，不污染系统 PATH。
 - `chi_sim.traineddata`：识别中文等级结果弹窗。
-- OpenCV：当前版本不需要，数字区域使用 Pillow 的颜色分割预处理。
+- `opencv-python`：用于数字区域的颜色掩码、闭运算修补和二值化预处理。
 
 超时页面出现时脚本会立即停止，不会点击“开始”或重新启动。详细流程和技术设计见 [`docs/binary-speedrun.md`](../docs/binary-speedrun.md)。

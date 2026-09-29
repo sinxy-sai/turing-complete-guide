@@ -12,6 +12,9 @@ from dataclasses import dataclass
 import pyautogui
 import pygetwindow as gw
 import pytesseract
+import cv2
+import numpy as np
+from PIL import Image
 
 
 @dataclass(frozen=True)
@@ -106,39 +109,36 @@ def prompt_number(text: str) -> int | None:
 
 
 def orange_digit_image(image):
-    """Keep only the orange decimal target and remove surrounding UI text."""
-    pixels = image.load()
-    values = []
-    for y in range(image.height):
-        for x in range(image.width):
-            red, green, blue = pixels[x, y][:3]
-            is_orange = (
-                red > 150
-                and 60 < green < 220
-                and blue < 150
-                and red > green * 1.15
-                and red > blue * 1.30
-            )
-            values.append(255 if is_orange else 0)
+    """Extract and repair the orange target digits for Tesseract."""
+    rgb = np.asarray(image.convert("RGB"))
+    red, green, blue = (rgb[:, :, index] for index in range(3))
+    rgb_mask = (
+        (red > 150)
+        & (green > 60)
+        & (green < 220)
+        & (blue < 150)
+        & (red > green * 1.15)
+        & (red > blue * 1.30)
+    ).astype(np.uint8) * 255
 
-    from PIL import Image
-
-    mask = Image.new("L", image.size, 0)
-    mask.putdata(values)
-    bounds = mask.getbbox()
-    if bounds is None:
+    hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
+    hsv_mask = cv2.inRange(hsv, np.array([0, 70, 120]), np.array([35, 255, 255]))
+    mask = cv2.bitwise_and(rgb_mask, hsv_mask)
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel, iterations=1)
+    points = cv2.findNonZero(mask)
+    if points is None:
         return None
-    left, top, right, bottom = bounds
+    left, top, width, height = cv2.boundingRect(points)
     margin = 10
-    cropped = mask.crop(
-        (
-            max(0, left - margin),
-            max(0, top - margin),
-            min(mask.width, right + margin),
-            min(mask.height, bottom + margin),
-        )
-    )
-    return cropped.resize((cropped.width * 4, cropped.height * 4))
+    left = max(0, left - margin)
+    top = max(0, top - margin)
+    right = min(mask.shape[1], left + width + margin * 2)
+    bottom = min(mask.shape[0], top + height + margin * 2)
+    cropped = mask[top:bottom, left:right]
+    cropped = cv2.resize(cropped, None, fx=4, fy=4, interpolation=cv2.INTER_CUBIC)
+    _, cropped = cv2.threshold(cropped, 127, 255, cv2.THRESH_BINARY)
+    return Image.fromarray(cropped)
 
 
 def capture(box: Box):
