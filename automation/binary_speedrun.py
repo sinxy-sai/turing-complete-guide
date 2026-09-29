@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import os
 import re
 import time
@@ -150,6 +151,7 @@ def read_number(box: Box) -> tuple[str, int | None]:
     digit_image = orange_digit_image(prompt_image)
     if digit_image is not None:
         attempts = []
+        observations = []
         for psm in (7, 10, 8):
             text = pytesseract.image_to_string(
                 digit_image,
@@ -159,7 +161,11 @@ def read_number(box: Box) -> tuple[str, int | None]:
             attempts.append(text)
             number = prompt_number(text)
             if number is not None:
-                return text, number
+                observations.append(number)
+        if observations:
+            number, count = Counter(observations).most_common(1)[0]
+            if count >= 2:
+                return " | ".join(attempts), number
         return " | ".join(attempts), None
 
     text = ocr(prompt_image)
