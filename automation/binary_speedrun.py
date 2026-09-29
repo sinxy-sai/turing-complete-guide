@@ -173,16 +173,12 @@ def read_level_dialog(box: Box) -> int | None:
 def timeout_page(box: Box) -> bool:
     """Return whether the game is showing its timeout page."""
     image = capture(box)
-    orange_pixels = 0
-    for y in range(round(box.height * 0.36), round(box.height * 0.48)):
+    timeout_pixels = 0
+    for y in range(round(box.height * 0.48), round(box.height * 0.58)):
         for x in range(round(box.width * 0.44), round(box.width * 0.56)):
             red, green, blue = image.getpixel((x, y))[:3]
-            orange_pixels += red > 180 and 70 < green < 210 and blue < 130 and red > green * 1.15
-    if orange_pixels < 3000:
-        return False
-
-    text = normalize_digits(ocr(box.crop(image, 0.25, 0.22, 0.75, 0.60)))
-    return "时间到" in text
+            timeout_pixels += red > 150 and green < 150 and blue < 150 and red > green * 1.20
+    return timeout_pixels >= 500
 
 
 def click(box: Box, x_ratio: float, y_ratio: float) -> None:
