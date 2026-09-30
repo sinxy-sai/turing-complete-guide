@@ -144,7 +144,7 @@ def orange_digit_image(image):
     bottom = min(mask.shape[0], top + height + margin * 2)
     cropped = mask[top:bottom, left:right]
     cropped = cv2.copyMakeBorder(cropped, 6, 6, 8, 8, cv2.BORDER_CONSTANT, value=0)
-    cropped = cv2.resize(cropped, None, fx=5, fy=5, interpolation=cv2.INTER_CUBIC)
+    cropped = cv2.resize(cropped, None, fx=5, fy=5, interpolation=cv2.INTER_NEAREST)
     _, cropped = cv2.threshold(cropped, 127, 255, cv2.THRESH_BINARY)
     return Image.fromarray(cropped)
 

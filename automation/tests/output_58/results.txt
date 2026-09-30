@@ -1,6 +1,0 @@
-input=C:\Users\liubingliang\Desktop\MGI\OpenSource\Own\turing-complete-guide\automation\tests\input_58.png
-expected=58
-psm=7: text='58', parsed=58
-psm=10: text='58', parsed=58
-psm=8: text='58', parsed=58
-Inspect 05_tesseract_input.png to verify whether the 8 keeps both closed holes.
