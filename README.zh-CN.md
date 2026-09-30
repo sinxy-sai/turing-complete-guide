@@ -52,6 +52,10 @@
     <td>Turing Complete 独立应用</td>
   </tr>
   <tr>
+    <td><strong>:link: Steam 商店</strong></td>
+    <td><a href="https://store.steampowered.com/app/1444480/Turing_Complete/">在 Steam 购买 Turing Complete</a></td>
+  </tr>
+  <tr>
     <td><strong>:label: 开发与验证版本</strong></td>
     <td>Turing Complete 2.1.334</td>
   </tr>
@@ -77,7 +81,7 @@
 - :art: 使用 OpenCV 提取橙色数字并进行图像预处理。
 - :abc: 使用 RapidOCR 识别题目数字和中文游戏状态文本。
 - :1234: 转换为 8 位二进制并自动点击对应按钮。
-- :octagonal_sign: 检测到等级结果弹窗后停止，不点击“继续”。
+- :stop_sign: 检测到等级结果弹窗后停止，不点击“继续”。
 - :hourglass_flowing_sand: 检测到超时页面后停止，不重新启动游戏。
 - :test_tube: 提供截图回归测试和实时诊断记录。
 
@@ -199,6 +203,7 @@
 ## :link: 参考来源
 
 - 项目仓库：[sinxy-sai/turing-complete-guide](https://github.com/sinxy-sai/turing-complete-guide)
+- 游戏商店页面：[Steam 上的 Turing Complete](https://store.steampowered.com/app/1444480/Turing_Complete/)
 - RapidOCR：[RapidAI/RapidOCR](https://github.com/RapidAI/RapidOCR)
 - OpenCV 图像处理文档：[Image Processing in OpenCV](https://docs.opencv.org/4.x/d2/d96/tutorial_py_table_of_contents_imgproc.html)
 - PyAutoGUI：[pyautogui.readthedocs.io](https://pyautogui.readthedocs.io/)

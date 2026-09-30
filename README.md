@@ -52,6 +52,10 @@ The project targets Windows desktop environments. Python dependencies, including
     <td>Standalone Turing Complete application</td>
   </tr>
   <tr>
+    <td><strong>:link: Steam Store</strong></td>
+    <td><a href="https://store.steampowered.com/app/1444480/Turing_Complete/">Buy Turing Complete on Steam</a></td>
+  </tr>
+  <tr>
     <td><strong>:label: Validated version</strong></td>
     <td>Turing Complete 2.1.334</td>
   </tr>
@@ -77,7 +81,7 @@ The project targets Windows desktop environments. Python dependencies, including
 - :art: Uses OpenCV to isolate orange digits and preprocess the image.
 - :abc: Uses RapidOCR for prompt digits and Chinese game-state text.
 - :1234: Converts prompts to 8-bit binary and clicks the corresponding bit buttons.
-- :octagonal_sign: Stops when a level-result dialog is detected and never clicks “Continue”.
+- :stop_sign: Stops when a level-result dialog is detected and never clicks “Continue”.
 - :hourglass_flowing_sand: Stops when the timeout page is detected instead of restarting the game.
 - :test_tube: Provides screenshot regression tests and live diagnostic recording.
 
@@ -199,6 +203,7 @@ This project is licensed under the [MIT License](LICENSE). Please follow the ter
 ## :link: References
 
 - Repository: [sinxy-sai/turing-complete-guide](https://github.com/sinxy-sai/turing-complete-guide)
+- Game store page: [Turing Complete on Steam](https://store.steampowered.com/app/1444480/Turing_Complete/)
 - RapidOCR: [RapidAI/RapidOCR](https://github.com/RapidAI/RapidOCR)
 - OpenCV image processing documentation: [Image Processing in OpenCV](https://docs.opencv.org/4.x/d2/d96/tutorial_py_table_of_contents_imgproc.html)
 - PyAutoGUI: [pyautogui.readthedocs.io](https://pyautogui.readthedocs.io/)
