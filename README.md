@@ -135,7 +135,15 @@ See the [Changelog](docs/changelog.md) for the project development history.
 ```text
 .
 ├── automation/
-│   ├── binary_speedrun.py       # Automation entry point
+│   ├── binary_speed/            # Automation package
+│   │   ├── __main__.py          # python -m binary_speed entry point
+│   │   ├── runner.py            # CLI orchestration
+│   │   ├── game.py              # Capture and game interaction
+│   │   ├── ocr.py               # OCR services
+│   │   ├── vision.py            # OpenCV preprocessing
+│   │   ├── window.py            # Window selection
+│   │   ├── diagnostics.py       # Optional diagnostics
+│   │   └── models.py            # Shared data models
 │   ├── run.ps1                  # Launcher
 │   ├── setup.ps1                # Virtual environment and dependencies
 │   ├── install-tesseract.ps1    # Project-local Tesseract installer

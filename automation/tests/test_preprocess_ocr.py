@@ -13,7 +13,9 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "automation"))
-import binary_speedrun as speedrun  # noqa: E402
+from binary_speed.models import Box  # noqa: E402
+from binary_speed.ocr import PromptOCR, configure_tesseract, prompt_number  # noqa: E402
+from binary_speed.vision import orange_digit_image, orange_digit_masks  # noqa: E402
 
 
 def save_mask(path: Path, image) -> None:
@@ -32,23 +34,23 @@ def main() -> int:
     output = args.output or default_output
     output.mkdir(parents=True, exist_ok=True)
     source = Image.open(input_path).convert("RGB")
-    box = speedrun.Box(0, 0, source.width, source.height)
+    box = Box(0, 0, source.width, source.height)
     prompt = box.crop(source, 0.30, 0.30, 0.70, 0.56)
     prompt.save(output / "01_prompt_crop.png")
 
-    warm, hsv, combined = speedrun.orange_digit_masks(prompt)
+    warm, hsv, combined = orange_digit_masks(prompt)
     save_mask(output / "02_warm_mask.png", warm)
     save_mask(output / "03_hsv_mask.png", hsv)
     save_mask(output / "04_combined_closed_mask.png", combined)
 
-    processed = speedrun.orange_digit_image(prompt)
+    processed = orange_digit_image(prompt)
     if processed is None:
         (output / "results.txt").write_text("No orange digit region found.\n", encoding="utf-8")
         return 1
     processed.save(output / "05_tesseract_input.png")
 
-    speedrun.configure_tesseract(None)
-    rapid_text, rapid_number, rapid_confidence = speedrun.rapidocr_number(prompt)
+    configure_tesseract(None)
+    rapid_text, rapid_number, rapid_confidence = PromptOCR().rapidocr_number(prompt)
     results: list[str] = []
     parsed_values: dict[int, int | None] = {}
     for psm in (7, 10, 8):
@@ -57,7 +59,7 @@ def main() -> int:
             lang="eng",
             config=f"--psm {psm} -c tessedit_char_whitelist=0123456789",
         ).strip()
-        parsed = speedrun.prompt_number(text)
+        parsed = prompt_number(text)
         parsed_values[psm] = parsed
         results.append(f"psm={psm}: text={text!r}, parsed={parsed!r}")
 

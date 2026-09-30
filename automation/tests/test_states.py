@@ -12,7 +12,9 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "automation"))
-import binary_speedrun as speedrun  # noqa: E402
+from binary_speed.game import timeout_page  # noqa: E402
+from binary_speed.models import Box  # noqa: E402
+from binary_speed.ocr import PromptOCR, configure_tesseract, full_screen_text, reached_level  # noqa: E402
 
 
 INPUT_DIR = Path(__file__).with_name("input")
@@ -35,13 +37,12 @@ def expected_for(path: Path) -> dict[str, object]:
 
 def classify(path: Path) -> dict[str, object]:
     image = Image.open(path).convert("RGB")
-    box = speedrun.Box(0, 0, image.width, image.height)
-    speedrun.capture = lambda _: image
-    speedrun.configure_tesseract(None)
+    box = Box(0, 0, image.width, image.height)
+    configure_tesseract(None)
 
-    full_text = speedrun.ocr(image).strip()
-    timeout = speedrun.timeout_page(box)
-    level = speedrun.reached_level(full_text)
+    full_text = full_screen_text(image).strip()
+    timeout = timeout_page(image, box)
+    level = reached_level(full_text)
 
     if timeout:
         state = "timeout"
@@ -53,7 +54,9 @@ def classify(path: Path) -> dict[str, object]:
         state = "ready"
         number = None
     else:
-        prompt_text, number = speedrun.read_number(box)
+        prompt = box.crop(image, 0.30, 0.30, 0.70, 0.56)
+        prompt_result = PromptOCR().read(prompt)
+        prompt_text, number = prompt_result.text, prompt_result.number
         state = "prompt" if number is not None else "unknown"
         full_text = f"{full_text}\n[prompt OCR] {prompt_text}"
 

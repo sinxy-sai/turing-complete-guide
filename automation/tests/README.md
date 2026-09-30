@@ -1,6 +1,8 @@
 # OpenCV 预处理与 OCR 测试
 
-使用 `input` 目录中的游戏截图，验证二进制速算题目的 OpenCV 预处理、RapidOCR 和 Tesseract 备用 OCR。
+使用 `input` 目录中的游戏截图，验证二进制速算题目的 OpenCV 预处理、RapidOCR 主识别和 Tesseract 备用 OCR。
+
+自动化实现位于 `automation/binary_speed` Python 包中；`run.ps1` 通过 `python -m binary_speed` 启动，不再保留单文件兼容入口。
 
 运行：
 
@@ -15,7 +17,7 @@
 .\.venv\Scripts\python.exe automation\tests\test_states.py
 ```
 
-它会测试 `ready`、普通题目、等级结果弹窗和超时页面，并将状态与 OCR 原文写入 `output\states\results.json` 和 `results.txt`。
+它会测试 `ready`、普通题目、等级结果弹窗和超时页面，并将状态与 OCR 原文写入 `output\states\results.json` 和 `results.txt`。超时页面中即使还能识别到等级文字，也按 timeout 分类，因为超时应立即终止自动化。
 
 当前输入样本包括：
 

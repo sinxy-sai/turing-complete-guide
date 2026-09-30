@@ -135,7 +135,15 @@
 ```text
 .
 ├── automation/
-│   ├── binary_speedrun.py       # 自动化主程序
+│   ├── binary_speed/            # 自动化 Python 包
+│   │   ├── __main__.py          # python -m binary_speed 入口
+│   │   ├── runner.py            # CLI 编排
+│   │   ├── game.py              # 截图与游戏交互
+│   │   ├── ocr.py               # OCR 服务
+│   │   ├── vision.py            # OpenCV 预处理
+│   │   ├── window.py            # 窗口选择
+│   │   ├── diagnostics.py       # 可选诊断
+│   │   └── models.py            # 公共数据模型
 │   ├── run.ps1                  # 启动脚本
 │   ├── setup.ps1                # 创建虚拟环境并安装依赖
 │   ├── install-tesseract.ps1    # 安装项目内 Tesseract

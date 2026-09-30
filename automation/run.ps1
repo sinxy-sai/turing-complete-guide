@@ -11,4 +11,13 @@ if (-not (Test-Path -LiteralPath $venvPython)) {
     & (Join-Path $PSScriptRoot 'setup.ps1')
 }
 
-& $venvPython (Join-Path $PSScriptRoot 'binary_speedrun.py') @Arguments
+Push-Location $PSScriptRoot
+try {
+    & $venvPython -m binary_speed @Arguments
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
+}
+finally {
+    Pop-Location
+}
