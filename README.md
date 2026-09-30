@@ -8,7 +8,8 @@
 <a href="https://www.microsoft.com/windows"><img src="https://img.shields.io/badge/Windows-10%2B-0078D6?logo=windows&logoColor=white&style=for-the-badge" alt="Windows 10 or later"></a>
 <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white&style=for-the-badge" alt="Python 3.x"></a>
 <a href="https://opencv.org/"><img src="https://img.shields.io/badge/OpenCV-4.x-5C3EE8?logo=opencv&logoColor=white&style=for-the-badge" alt="OpenCV 4.x"></a>
-<a href="https://github.com/tesseract-ocr/tesseract"><img src="https://img.shields.io/badge/Tesseract-OCR-4285F4?style=for-the-badge" alt="Tesseract OCR"></a>
+<a href="https://github.com/RapidAI/RapidOCR"><img src="https://img.shields.io/badge/RapidOCR-ONNX-FF6F00?style=for-the-badge" alt="RapidOCR ONNX"></a>
+<a href="https://github.com/tesseract-ocr/tesseract"><img src="https://img.shields.io/badge/Tesseract-OCR-4285F4?style=for-the-badge" alt="Tesseract OCR fallback"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-750014?style=for-the-badge" alt="MIT License"></a>
 <a href="docs/changelog.md"><img src="https://img.shields.io/badge/Changelog-view-6B7280?style=for-the-badge" alt="Changelog"></a>
 
@@ -37,7 +38,7 @@ The project targets Windows desktop environments. Python dependencies are instal
   </tr>
   <tr>
     <td><strong>:abc: OCR</strong></td>
-    <td>Tesseract OCR with Simplified Chinese language data</td>
+    <td>RapidOCR for prompts; Tesseract OCR for Chinese dialogs and fallback</td>
   </tr>
   <tr>
     <td><strong>:page_facing_up: License</strong></td>
@@ -51,7 +52,7 @@ The project targets Windows desktop environments. Python dependencies are instal
 
 - :mag: Recognizes decimal prompts from the game screen.
 - :art: Uses OpenCV to isolate orange digits and preprocess the image.
-- :abc: Uses Tesseract OCR for prompt and result-dialog recognition.
+- :abc: Uses RapidOCR for prompt digits and Tesseract OCR for result-dialog recognition and fallback.
 - :1234: Converts prompts to 8-bit binary and clicks the corresponding bit buttons.
 - :octagonal_sign: Stops when a level-result dialog is detected and never clicks “Continue”.
 - :hourglass_flowing_sand: Stops when the timeout page is detected instead of restarting the game.
@@ -158,6 +159,7 @@ This project is licensed under the [MIT License](LICENSE). Please follow the ter
 ## :link: References
 
 - Repository: [sinxy-sai/turing-complete-guide](https://github.com/sinxy-sai/turing-complete-guide)
+- RapidOCR: [RapidAI/RapidOCR](https://github.com/RapidAI/RapidOCR)
 - Tesseract OCR: [tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
 - Tesseract language data: [tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast)
 - OpenCV image processing documentation: [Image Processing in OpenCV](https://docs.opencv.org/4.x/d2/d96/tutorial_py_table_of_contents_imgproc.html)

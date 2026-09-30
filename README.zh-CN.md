@@ -8,7 +8,8 @@
 <a href="https://www.microsoft.com/windows"><img src="https://img.shields.io/badge/Windows-10%2B-0078D6?logo=windows&logoColor=white&style=for-the-badge" alt="Windows 10 或更高版本"></a>
 <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white&style=for-the-badge" alt="Python 3.x"></a>
 <a href="https://opencv.org/"><img src="https://img.shields.io/badge/OpenCV-4.x-5C3EE8?logo=opencv&logoColor=white&style=for-the-badge" alt="OpenCV 4.x"></a>
-<a href="https://github.com/tesseract-ocr/tesseract"><img src="https://img.shields.io/badge/Tesseract-OCR-4285F4?style=for-the-badge" alt="Tesseract OCR"></a>
+<a href="https://github.com/RapidAI/RapidOCR"><img src="https://img.shields.io/badge/RapidOCR-ONNX-FF6F00?style=for-the-badge" alt="RapidOCR ONNX"></a>
+<a href="https://github.com/tesseract-ocr/tesseract"><img src="https://img.shields.io/badge/Tesseract-OCR-4285F4?style=for-the-badge" alt="Tesseract OCR fallback"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-750014?style=for-the-badge" alt="MIT License"></a>
 <a href="docs/changelog.md"><img src="https://img.shields.io/badge/Changelog-%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97-6B7280?style=for-the-badge" alt="更新日志"></a>
 
@@ -37,7 +38,7 @@
   </tr>
   <tr>
     <td><strong>:abc: OCR</strong></td>
-    <td>Tesseract OCR 与简体中文语言数据</td>
+    <td>RapidOCR 识别题目；Tesseract OCR 识别中文弹窗并作为备用</td>
   </tr>
   <tr>
     <td><strong>:page_facing_up: 许可证</strong></td>
@@ -51,7 +52,7 @@
 
 - :mag: 识别游戏界面中的十进制题目。
 - :art: 使用 OpenCV 提取橙色数字并进行图像预处理。
-- :abc: 使用 Tesseract OCR 识别题目数字和结果弹窗。
+- :abc: 使用 RapidOCR 识别题目数字，并使用 Tesseract OCR 识别结果弹窗和作为备用方案。
 - :1234: 转换为 8 位二进制并自动点击对应按钮。
 - :octagonal_sign: 检测到等级结果弹窗后停止，不点击“继续”。
 - :hourglass_flowing_sand: 检测到超时页面后停止，不重新启动游戏。
@@ -158,6 +159,7 @@
 ## :link: 参考来源
 
 - 项目仓库：[sinxy-sai/turing-complete-guide](https://github.com/sinxy-sai/turing-complete-guide)
+- RapidOCR：[RapidAI/RapidOCR](https://github.com/RapidAI/RapidOCR)
 - Tesseract OCR：[tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
 - Tesseract 语言数据：[tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast)
 - OpenCV 图像处理文档：[Image Processing in OpenCV](https://docs.opencv.org/4.x/d2/d96/tutorial_py_table_of_contents_imgproc.html)

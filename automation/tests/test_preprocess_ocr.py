@@ -48,6 +48,7 @@ def main() -> int:
     processed.save(output / "05_tesseract_input.png")
 
     speedrun.configure_tesseract(None)
+    rapid_text, rapid_number, rapid_confidence = speedrun.rapidocr_number(prompt)
     results: list[str] = []
     parsed_values: dict[int, int | None] = {}
     for psm in (7, 10, 8):
@@ -65,7 +66,9 @@ def main() -> int:
     report = [
         f"input={input_path}",
         f"expected={args.expected}",
+        f"rapidocr: text={rapid_text!r}, parsed={rapid_number!r}, confidence={rapid_confidence:.3f}",
         *results,
+        f"rapidocr_matching={rapid_number == args.expected}",
         f"matching_psm={matching_psm}",
         "Inspect 05_tesseract_input.png to verify the final OCR input image.",
     ]

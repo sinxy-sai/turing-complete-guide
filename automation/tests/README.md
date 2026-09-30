@@ -1,6 +1,6 @@
 # OpenCV 预处理与 OCR 测试
 
-使用 `input` 目录中的游戏截图，验证二进制速算题目的 OpenCV 预处理和 Tesseract OCR。
+使用 `input` 目录中的游戏截图，验证二进制速算题目的 OpenCV 预处理、RapidOCR 和 Tesseract 备用 OCR。
 
 运行：
 
@@ -21,6 +21,7 @@
 
 - `ready.png`：准备页面，包含“准备好了吗？”和“开始”。
 - `prompt_1.png`、`58.png`、`79.png`：题目页面。
+- `57.png`、`81.png`、`89.png`：真实 OCR 误识别回归样本。
 - `result_level4.png`：等级结果弹窗。
 - `timeout_level3.png`：超时页面。
 
@@ -30,8 +31,8 @@
 - `02_warm_mask.png`：基于 RGB 通道差异的颜色掩码。
 - `03_hsv_mask.png`：基于 HSV 色相、饱和度和值的掩码。
 - `04_combined_closed_mask.png`：合并并经过形态学闭运算的掩码。
-- `05_tesseract_input.png`：最终交给 Tesseract 的输入图。
-- `results.txt`：各 PSM 模式的识别结果。
+- `05_tesseract_input.png`：Tesseract 备用 OCR 的输入图。
+- `results.txt`：RapidOCR 和各 PSM 模式的识别结果。
 
 `results.txt` 会记录每个 PSM 的原始文本、解析数字和匹配情况。
 `output` 目录已加入 `.gitignore`，产物只保留在本地，不提交到 Git。

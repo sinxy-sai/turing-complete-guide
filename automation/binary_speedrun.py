@@ -18,6 +18,14 @@ import cv2
 import numpy as np
 from PIL import Image
 
+try:
+    from rapidocr_onnxruntime import RapidOCR
+except ImportError:  # pragma: no cover - the setup script installs this dependency
+    RapidOCR = None
+
+
+_rapidocr = None
+
 
 @dataclass(frozen=True)
 class Box:
@@ -163,6 +171,42 @@ def capture(box: Box):
     return pyautogui.screenshot(region=(box.left, box.top, box.width, box.height))
 
 
+def rapidocr_number(image) -> tuple[str, int | None, float]:
+    """Recognize the orange prompt number with RapidOCR."""
+    global _rapidocr
+    if RapidOCR is None:
+        return "", None, -1.0
+    if _rapidocr is None:
+        _rapidocr = RapidOCR()
+
+    result, _ = _rapidocr(np.asarray(image.convert("RGB")))
+    if not result:
+        return "", None, -1.0
+
+    _, _, orange_mask = orange_digit_masks(image)
+    candidates = []
+    for box_points, raw_text, confidence in result:
+        text = normalize_digits(str(raw_text)).strip()
+        number = prompt_number(text)
+        if number is None or not re.fullmatch(r"\d{1,3}", text):
+            continue
+        points = np.asarray(box_points, dtype=np.float32)
+        left = max(0, int(np.floor(points[:, 0].min())))
+        top = max(0, int(np.floor(points[:, 1].min())))
+        right = min(orange_mask.shape[1], int(np.ceil(points[:, 0].max())) + 1)
+        bottom = min(orange_mask.shape[0], int(np.ceil(points[:, 1].max())) + 1)
+        if right <= left or bottom <= top:
+            continue
+        region = orange_mask[top:bottom, left:right]
+        orange_ratio = cv2.countNonZero(region) / max(1, region.size)
+        candidates.append((orange_ratio, float(confidence), text, number))
+
+    if not candidates:
+        return "", None, -1.0
+    _, confidence, text, number = max(candidates, key=lambda item: (item[0], item[1]))
+    return text, number, confidence
+
+
 def ocr_number(image, psm: int) -> tuple[str, int | None, float]:
     """Read a number and return its text, parsed value, and OCR confidence."""
     config = f"--psm {psm} -c tessedit_char_whitelist=0123456789"
@@ -188,6 +232,16 @@ def read_number(box: Box, diagnostic_dir: Path | None = None) -> tuple[str, int 
         prompt_image.save(diagnostic_dir / "prompt_crop.png")
     digit_image = orange_digit_image(prompt_image)
     if digit_image is not None:
+        rapid_text, rapid_number, rapid_confidence = rapidocr_number(prompt_image)
+        if rapid_number is not None:
+            if diagnostic_dir is not None:
+                prompt_image.save(diagnostic_dir / "rapidocr_input.png")
+                (diagnostic_dir / "ocr_attempts.txt").write_text(
+                    f"rapidocr: {rapid_text!r}, parsed={rapid_number!r}, confidence={rapid_confidence:.3f}\n",
+                    encoding="utf-8",
+                )
+            return rapid_text, rapid_number
+
         if diagnostic_dir is not None:
             digit_image.save(diagnostic_dir / "tesseract_input.png")
         digit_count = orange_digit_count(prompt_image)
@@ -209,13 +263,7 @@ def read_number(box: Box, diagnostic_dir: Path | None = None) -> tuple[str, int 
             selected = baseline
             if len(candidates) >= 2 and candidates[-1][3] == 8:
                 fallback = candidates[-1]
-                # Tesseract's sparse-layout mode often turns a leading 1 into
-                # 4 (for example 17 -> 47). Keep the baseline in that case.
-                leading_one_confusion = (
-                    str(baseline[1]).startswith("1")
-                    and str(fallback[1]).startswith("4")
-                )
-                if not leading_one_confusion and fallback[2] > baseline[2]:
+                if fallback[2] > baseline[2]:
                     selected = fallback
             if diagnostic_dir is not None:
                 (diagnostic_dir / "ocr_attempts.txt").write_text(
