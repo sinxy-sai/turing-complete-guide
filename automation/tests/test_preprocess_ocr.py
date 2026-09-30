@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "automation"))
 from binary_speed.models import Box  # noqa: E402
 from binary_speed.ocr import PromptOCR  # noqa: E402
-from binary_speed.vision import orange_digit_masks  # noqa: E402
+from binary_speed.vision import orange_digit_masks, prompt_focus  # noqa: E402
 
 
 def save_mask(path: Path, image) -> None:
@@ -36,11 +36,12 @@ def main() -> int:
     box = Box(0, 0, source.width, source.height)
     prompt = box.crop(source, 0.30, 0.30, 0.70, 0.56)
     prompt.save(output / "01_prompt_crop.png")
+    prompt_focus(prompt).save(output / "02_prompt_focus.png")
 
     warm, hsv, combined = orange_digit_masks(prompt)
-    save_mask(output / "02_warm_mask.png", warm)
-    save_mask(output / "03_hsv_mask.png", hsv)
-    save_mask(output / "04_combined_closed_mask.png", combined)
+    save_mask(output / "03_warm_mask.png", warm)
+    save_mask(output / "04_hsv_mask.png", hsv)
+    save_mask(output / "05_combined_closed_mask.png", combined)
 
     text, number, confidence = PromptOCR().rapidocr_number(prompt)
     report = [
@@ -48,7 +49,7 @@ def main() -> int:
         f"expected={args.expected}",
         f"rapidocr: text={text!r}, parsed={number!r}, confidence={confidence:.3f}",
         f"matching={number == args.expected}",
-        "RapidOCR reads the original prompt crop; OpenCV masks are saved for inspection.",
+        "RapidOCR reads the original and focused prompt crops; OpenCV masks are saved for inspection.",
     ]
     (output / "results.txt").write_text("\n".join(report) + "\n", encoding="utf-8")
     print("\n".join(report))

@@ -105,6 +105,7 @@
 </details>
 
 诊断数据保存在 `automation\tests\output\live\<timestamp>`，并已加入 Git 忽略规则。
+每次 OCR 尝试都会保存 `rapidocr_input.png` 和 `rapidocr_focus_input.png`，分别对应原始和彩色焦点裁剪图。
 
 ## :test_tube: 测试
 
@@ -119,6 +120,8 @@
 ```powershell
 .\.venv\Scripts\python.exe automation\tests\test_preprocess_ocr.py automation\tests\input\81.png --expected 81
 ```
+
+回归样本中包括之前容易漏识别的 `0.png` 题目截图。
 
 输入截图保存在 `automation\tests\input`，生成的测试结果保存在 `automation\tests\output`，后者不会提交到 Git。
 

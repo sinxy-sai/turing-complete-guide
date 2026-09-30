@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 from .models import PromptRead
+from .vision import prompt_focus
 
 
 class DiagnosticRecorder:
@@ -45,6 +46,7 @@ class DiagnosticRecorder:
         prompt_image.save(attempt_dir / "prompt_crop.png")
         if result.prompt_image is not None:
             prompt_image.save(attempt_dir / "rapidocr_input.png")
+            prompt_focus(prompt_image).save(attempt_dir / "rapidocr_focus_input.png")
         lines = []
         for attempt in result.attempts:
             lines.append(

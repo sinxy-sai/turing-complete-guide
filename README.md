@@ -105,6 +105,7 @@ Use `--window-title` when the window title differs from the default:
 </details>
 
 Diagnostic data is written to `automation\tests\output\live\<timestamp>`. These generated files are ignored by Git.
+Each OCR attempt records both `rapidocr_input.png` and `rapidocr_focus_input.png`, representing the original and focused color crops.
 
 ## :test_tube: Tests
 
@@ -119,6 +120,8 @@ Inspect preprocessing and OCR for a specific input:
 ```powershell
 .\.venv\Scripts\python.exe automation\tests\test_preprocess_ocr.py automation\tests\input\81.png --expected 81
 ```
+
+The regression fixtures include the previously problematic `0.png` prompt.
 
 Input screenshots are stored in `automation\tests\input`. Generated test output is stored in `automation\tests\output` and is ignored by Git.
 

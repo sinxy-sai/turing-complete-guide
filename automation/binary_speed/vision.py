@@ -23,3 +23,16 @@ def orange_digit_masks(image):
     close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     closed_mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, close_kernel, iterations=1)
     return warm_mask, hsv_mask, closed_mask
+
+
+def prompt_focus(image):
+    """Crop the central question-number area from a prompt image."""
+    width, height = image.size
+    return image.crop(
+        (
+            round(width * 0.35),
+            round(height * 0.15),
+            round(width * 0.65),
+            round(height * 0.75),
+        )
+    )

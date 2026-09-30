@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 
 from .models import OCRAttempt, PromptRead
-from .vision import orange_digit_masks
+from .vision import orange_digit_masks, prompt_focus
 
 try:
     from rapidocr_onnxruntime import RapidOCR
@@ -65,27 +65,27 @@ class PromptOCR:
         if engine is None:
             return "", None, -1.0
 
-        result, _ = engine(np.asarray(image.convert("RGB")))
-        if not result:
-            return "", None, -1.0
-
-        _, _, orange_mask = orange_digit_masks(image)
         candidates = []
-        for box_points, raw_text, confidence in result:
-            text = normalize_digits(str(raw_text)).strip()
-            number = prompt_number(text)
-            if number is None or not re.fullmatch(r"\d{1,3}", text):
+        for source in (image, prompt_focus(image)):
+            result, _ = engine(np.asarray(source.convert("RGB")))
+            if not result:
                 continue
-            points = np.asarray(box_points, dtype=np.float32)
-            left = max(0, int(np.floor(points[:, 0].min())))
-            top = max(0, int(np.floor(points[:, 1].min())))
-            right = min(orange_mask.shape[1], int(np.ceil(points[:, 0].max())) + 1)
-            bottom = min(orange_mask.shape[0], int(np.ceil(points[:, 1].max())) + 1)
-            if right <= left or bottom <= top:
-                continue
-            region = orange_mask[top:bottom, left:right]
-            orange_ratio = cv2.countNonZero(region) / max(1, region.size)
-            candidates.append((orange_ratio, float(confidence), text, number))
+            _, _, orange_mask = orange_digit_masks(source)
+            for box_points, raw_text, confidence in result:
+                text = normalize_digits(str(raw_text)).strip()
+                number = prompt_number(text)
+                if number is None or not re.fullmatch(r"\d{1,3}", text):
+                    continue
+                points = np.asarray(box_points, dtype=np.float32)
+                left = max(0, int(np.floor(points[:, 0].min())))
+                top = max(0, int(np.floor(points[:, 1].min())))
+                right = min(orange_mask.shape[1], int(np.ceil(points[:, 0].max())) + 1)
+                bottom = min(orange_mask.shape[0], int(np.ceil(points[:, 1].max())) + 1)
+                if right <= left or bottom <= top:
+                    continue
+                region = orange_mask[top:bottom, left:right]
+                orange_ratio = cv2.countNonZero(region) / max(1, region.size)
+                candidates.append((orange_ratio, float(confidence), text, number))
 
         if not candidates:
             return "", None, -1.0
