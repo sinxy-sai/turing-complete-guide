@@ -38,3 +38,6 @@ All notable changes to this project are documented here. The project does not ha
 
 - The default project documentation is available in [README.md](../README.md).
 - Simplified Chinese documentation is available in [README.zh-CN.md](../README.zh-CN.md).
+# Unreleased
+
+- Removed Tesseract, PyTesseract, and the project-local Tesseract installer. RapidOCR now handles prompt digits and Chinese game-state text.

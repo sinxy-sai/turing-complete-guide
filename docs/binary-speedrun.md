@@ -17,7 +17,7 @@
 
 - `runner.py`：命令行参数和流程编排。
 - `game.py`：截图、超时检测、点击和二进制答案输入。
-- `ocr.py`：RapidOCR 题目识别、Tesseract 备用识别和结果弹窗 OCR。
+- `ocr.py`：RapidOCR 题目识别和游戏状态文本 OCR。
 - `vision.py`：题目区域的 OpenCV 预处理。
 - `window.py`：游戏窗口查找与屏幕区域选择。
 - `diagnostics.py`：可选截图和事件记录，只消费已捕获帧，不控制游戏。
@@ -31,7 +31,7 @@ PowerShell 启动脚本使用项目 `.venv` 执行该包，不再保留重复的
 ```mermaid
 flowchart TD
     A[启动 run.ps1] --> B[加载 .venv Python]
-    B --> C[配置项目内 Tesseract]
+    B --> C[加载 RapidOCR ONNX Runtime]
     C --> D{是否指定 fullscreen?}
     D -- 否 --> E[按窗口标题查找并激活 App]
     D -- 是 --> F{能否找到游戏窗口?}
@@ -78,9 +78,9 @@ flowchart TD
 
 1. 截取屏幕中央的题目区域。
 2. 使用 OpenCV 按 RGB/HSV 条件保留橙色像素。
-3. 用形态学闭运算修补数字笔画，找到边界并放大 4 倍。
+3. 用形态学闭运算修补数字笔画，并用橙色像素比例筛选题目候选框。
 4. 将中央题目区域交给 RapidOCR ONNX 模型识别数字。
-5. 如果 RapidOCR 不可用，再使用 Tesseract 英文数字模型和数字白名单作为备用。
+5. 使用 RapidOCR 识别题目数字，并从整屏 RapidOCR 文本中判断游戏状态。
 
 这样可以排除顶部的“第 1 级”、白色倒计时和底部按钮文字。识别结果仍可能受 DPI 缩放、窗口裁剪或游戏动画影响，因此脚本会重复尝试最多 20 次。
 
@@ -91,7 +91,7 @@ flowchart LR
     C --> D[闭运算修补与边界裁剪]
     D --> E[RapidOCR 数字 OCR]
     E --> F{识别成功?}
-    F -- 否 --> G[Tesseract 备用 OCR]
+    F -- 否 --> G[继续重试当前截图]
     F -- 是 --> H[解析 0..255]
     G --> H
 ```
@@ -126,7 +126,7 @@ if number & weight:
 ## 8. 当前已知限制
 
 - 全屏模式无法从任务栏图标本身可靠推断目标窗口；如果窗口标题不可读，需要手动切换一次。
-- 题目数字识别依赖 RapidOCR ONNX Runtime；结果弹窗识别依赖项目内 Tesseract 可执行文件和 `chi_sim` 数据。
+- 题目数字和状态文本识别依赖 RapidOCR ONNX Runtime。
 - 坐标使用相对比例，但游戏 UI 布局变化仍可能影响点击。
 - 实时诊断模式会记录每一题的原始截图、RapidOCR 输入图、OCR 文本和点击结果。
 

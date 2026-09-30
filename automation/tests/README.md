@@ -1,6 +1,6 @@
 # OpenCV 预处理与 OCR 测试
 
-使用 `input` 目录中的游戏截图，验证二进制速算题目的 OpenCV 预处理、RapidOCR 主识别和 Tesseract 备用 OCR。
+使用 `input` 目录中的游戏截图，验证二进制速算题目的 OpenCV 预处理和 RapidOCR 识别。
 
 自动化实现位于 `automation/binary_speed` Python 包中；`run.ps1` 通过 `python -m binary_speed` 启动，不再保留单文件兼容入口。
 
@@ -33,8 +33,7 @@
 - `02_warm_mask.png`：基于 RGB 通道差异的颜色掩码。
 - `03_hsv_mask.png`：基于 HSV 色相、饱和度和值的掩码。
 - `04_combined_closed_mask.png`：合并并经过形态学闭运算的掩码。
-- `05_tesseract_input.png`：Tesseract 备用 OCR 的输入图。
-- `results.txt`：RapidOCR 和各 PSM 模式的识别结果。
+- `results.txt`：RapidOCR 的识别结果和置信度。
 
 `results.txt` 会记录每个 PSM 的原始文本、解析数字和匹配情况。
 `output` 目录已加入 `.gitignore`，产物只保留在本地，不提交到 Git。

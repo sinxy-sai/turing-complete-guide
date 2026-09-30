@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "automation"))
 from binary_speed.game import timeout_page  # noqa: E402
 from binary_speed.models import Box  # noqa: E402
-from binary_speed.ocr import PromptOCR, configure_tesseract, full_screen_text, reached_level  # noqa: E402
+from binary_speed.ocr import PromptOCR, full_screen_text, reached_level  # noqa: E402
 
 
 INPUT_DIR = Path(__file__).with_name("input")
@@ -38,8 +38,6 @@ def expected_for(path: Path) -> dict[str, object]:
 def classify(path: Path) -> dict[str, object]:
     image = Image.open(path).convert("RGB")
     box = Box(0, 0, image.width, image.height)
-    configure_tesseract(None)
-
     full_text = full_screen_text(image).strip()
     timeout = timeout_page(image, box)
     level = reached_level(full_text)

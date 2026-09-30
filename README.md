@@ -9,7 +9,6 @@
 <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white&style=for-the-badge" alt="Python 3.x"></a>
 <a href="https://opencv.org/"><img src="https://img.shields.io/badge/OpenCV-4.x-5C3EE8?logo=opencv&logoColor=white&style=for-the-badge" alt="OpenCV 4.x"></a>
 <a href="https://github.com/RapidAI/RapidOCR"><img src="https://img.shields.io/badge/RapidOCR-ONNX-FF6F00?style=for-the-badge" alt="RapidOCR ONNX"></a>
-<a href="https://github.com/tesseract-ocr/tesseract"><img src="https://img.shields.io/badge/Tesseract-OCR-4285F4?style=for-the-badge" alt="Tesseract OCR fallback"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-750014?style=for-the-badge" alt="MIT License"></a>
 <a href="docs/changelog.md"><img src="https://img.shields.io/badge/Changelog-view-6B7280?style=for-the-badge" alt="Changelog"></a>
 
@@ -21,7 +20,7 @@
 
 This project captures the game screen, recognizes the decimal prompt, converts it to an 8-bit binary value, clicks the corresponding bit buttons, and submits the answer.
 
-The project targets Windows desktop environments. Python dependencies are installed in the project-local `.venv`, and the OCR engine is installed in `.tools\tesseract`; system-wide Python packages and PATH configuration are not required.
+The project targets Windows desktop environments. Python dependencies, including the RapidOCR ONNX runtime, are installed in the project-local `.venv`; no separate OCR executable or system-wide Python packages are required.
 
 <table>
   <tr>
@@ -38,7 +37,7 @@ The project targets Windows desktop environments. Python dependencies are instal
   </tr>
   <tr>
     <td><strong>:abc: OCR</strong></td>
-    <td>RapidOCR for prompts; Tesseract OCR for Chinese dialogs and fallback</td>
+    <td>RapidOCR for prompt digits and Chinese game-state text</td>
   </tr>
   <tr>
     <td><strong>:page_facing_up: License</strong></td>
@@ -52,7 +51,7 @@ The project targets Windows desktop environments. Python dependencies are instal
 
 - :mag: Recognizes decimal prompts from the game screen.
 - :art: Uses OpenCV to isolate orange digits and preprocess the image.
-- :abc: Uses RapidOCR for prompt digits and Tesseract OCR for result-dialog recognition and fallback.
+- :abc: Uses RapidOCR for prompt digits and Chinese game-state text.
 - :1234: Converts prompts to 8-bit binary and clicks the corresponding bit buttons.
 - :octagonal_sign: Stops when a level-result dialog is detected and never clicks “Continue”.
 - :hourglass_flowing_sand: Stops when the timeout page is detected instead of restarting the game.
@@ -64,10 +63,9 @@ Run these commands from the repository root:
 
 ```powershell
 .\automation\setup.ps1
-.\automation\install-tesseract.ps1
 ```
 
-The first command creates `.venv` and installs the Python dependencies. The second installs Tesseract OCR and the Simplified Chinese language data into `.tools\tesseract`.
+The setup command creates `.venv` and installs the Python dependencies, including RapidOCR and its ONNX runtime.
 
 ## :arrow_forward: Usage
 
@@ -146,7 +144,6 @@ See the [Changelog](docs/changelog.md) for the project development history.
 │   │   └── models.py            # Shared data models
 │   ├── run.ps1                  # Launcher
 │   ├── setup.ps1                # Virtual environment and dependencies
-│   ├── install-tesseract.ps1    # Project-local Tesseract installer
 │   ├── requirements.txt         # Python dependencies
 │   └── tests/
 │       ├── input/               # Versioned screenshot fixtures
@@ -168,9 +165,6 @@ This project is licensed under the [MIT License](LICENSE). Please follow the ter
 
 - Repository: [sinxy-sai/turing-complete-guide](https://github.com/sinxy-sai/turing-complete-guide)
 - RapidOCR: [RapidAI/RapidOCR](https://github.com/RapidAI/RapidOCR)
-- Tesseract OCR: [tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
-- Tesseract language data: [tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast)
 - OpenCV image processing documentation: [Image Processing in OpenCV](https://docs.opencv.org/4.x/d2/d96/tutorial_py_table_of_contents_imgproc.html)
-- PyTesseract: [madmaze/pytesseract](https://github.com/madmaze/pytesseract)
 - PyAutoGUI: [pyautogui.readthedocs.io](https://pyautogui.readthedocs.io/)
 - Badge reference: [pudding0503/github-badge-collection](https://github.com/pudding0503/github-badge-collection)

@@ -36,7 +36,6 @@ class OCRAttempt:
     text: str
     number: int | None
     confidence: float
-    mode: int | None = None
 
 
 @dataclass
@@ -44,6 +43,4 @@ class PromptRead:
     text: str = ""
     number: int | None = None
     attempts: list[OCRAttempt] = field(default_factory=list)
-    digit_image: Any | None = None
     prompt_image: Any | None = None
-

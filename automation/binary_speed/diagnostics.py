@@ -43,15 +43,12 @@ class DiagnosticRecorder:
         attempt_dir.mkdir(parents=True, exist_ok=True)
         screen.save(attempt_dir / "screen.png")
         prompt_image.save(attempt_dir / "prompt_crop.png")
-        if result.prompt_image is not None and result.attempts and result.attempts[0].engine == "rapidocr":
+        if result.prompt_image is not None:
             prompt_image.save(attempt_dir / "rapidocr_input.png")
-        if result.digit_image is not None:
-            result.digit_image.save(attempt_dir / "tesseract_input.png")
         lines = []
         for attempt in result.attempts:
-            mode = f" psm={attempt.mode}" if attempt.mode is not None else ""
             lines.append(
-                f"{attempt.engine}{mode}: {attempt.text!r}, parsed={attempt.number!r}, confidence={attempt.confidence:.3f}"
+                f"{attempt.engine}: {attempt.text!r}, parsed={attempt.number!r}, confidence={attempt.confidence:.3f}"
             )
         (attempt_dir / "ocr_attempts.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
 

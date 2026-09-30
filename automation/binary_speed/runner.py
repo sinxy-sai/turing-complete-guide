@@ -9,7 +9,7 @@ import pyautogui
 
 from .diagnostics import DiagnosticRecorder
 from .game import capture, click, solve, timeout_page
-from .ocr import PromptOCR, configure_tesseract, full_screen_text, reached_level
+from .ocr import PromptOCR, full_screen_text, reached_level
 from .window import select_game_box
 
 
@@ -79,7 +79,6 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="保存每轮截图、OCR 输入图、OCR 原文和耗时到 automation/tests/output/live",
     )
-    parser.add_argument("--tesseract-cmd")
     parser.add_argument("--window-title", help="独立 App 窗口标题中的文字")
     parser.add_argument(
         "--fullscreen",
@@ -96,7 +95,6 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def run(args: argparse.Namespace) -> None:
-    configure_tesseract(args.tesseract_cmd)
     pyautogui.PAUSE = 0.03
     pyautogui.FAILSAFE = True
     box = select_game_box(args.window_title, args.fullscreen, args.wait_seconds)
