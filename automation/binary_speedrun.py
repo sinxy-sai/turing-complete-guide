@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import time
 from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
 
 import pyautogui
 import pygetwindow as gw
@@ -153,11 +156,17 @@ def capture(box: Box):
     return pyautogui.screenshot(region=(box.left, box.top, box.width, box.height))
 
 
-def read_number(box: Box) -> tuple[str, int | None]:
+def read_number(box: Box, diagnostic_dir: Path | None = None) -> tuple[str, int | None]:
     image = capture(box)
     prompt_image = box.crop(image, 0.30, 0.30, 0.70, 0.56)
+    if diagnostic_dir is not None:
+        diagnostic_dir.mkdir(parents=True, exist_ok=True)
+        image.save(diagnostic_dir / "screen.png")
+        prompt_image.save(diagnostic_dir / "prompt_crop.png")
     digit_image = orange_digit_image(prompt_image)
     if digit_image is not None:
+        if diagnostic_dir is not None:
+            digit_image.save(diagnostic_dir / "tesseract_input.png")
         attempts = []
         for psm in (7, 10, 8):
             text = pytesseract.image_to_string(
@@ -166,13 +175,51 @@ def read_number(box: Box) -> tuple[str, int | None]:
                 config=f"--psm {psm} -c tessedit_char_whitelist=0123456789",
             ).strip()
             attempts.append(text)
+            if diagnostic_dir is not None:
+                (diagnostic_dir / "ocr_attempts.txt").write_text(
+                    "\n".join(f"psm={mode}: {value!r}" for mode, value in zip((7, 10, 8), attempts))
+                    + "\n",
+                    encoding="utf-8",
+                )
             number = prompt_number(text)
             if number is not None:
                 return text, number
         return " | ".join(attempts), None
 
     text = ocr(prompt_image)
+    if diagnostic_dir is not None:
+        (diagnostic_dir / "ocr_attempts.txt").write_text(f"fallback={text!r}\n", encoding="utf-8")
     return text, prompt_number(text)
+
+
+class DiagnosticRecorder:
+    def __init__(self, enabled: bool) -> None:
+        self.root: Path | None = None
+        if enabled:
+            stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+            self.root = Path(__file__).with_name("tests") / "output" / "live" / stamp
+            self.root.mkdir(parents=True, exist_ok=True)
+            self.events_path = self.root / "events.jsonl"
+
+    def round_dir(self, round_number: int) -> Path | None:
+        if self.root is None:
+            return None
+        path = self.root / f"round_{round_number:04d}"
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+
+    def event(self, data: dict[str, object]) -> None:
+        if self.root is None:
+            return
+        with self.events_path.open("a", encoding="utf-8") as stream:
+            stream.write(json.dumps(data, ensure_ascii=False) + "\n")
+
+    def save_screen(self, name: str, box: Box, round_dir: Path | None = None) -> None:
+        if self.root is None:
+            return
+        target_dir = round_dir or self.root
+        target_dir.mkdir(parents=True, exist_ok=True)
+        capture(box).save(target_dir / name)
 
 
 def read_level_dialog(box: Box) -> int | None:
@@ -210,6 +257,11 @@ def main() -> None:
     parser.add_argument("--stop-at-level", type=int, default=4)
     parser.add_argument("--no-start", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--diagnostics",
+        action="store_true",
+        help="保存每轮截图、OpenCV 输入图、OCR 原文和耗时到 automation/tests/output/live",
+    )
     parser.add_argument("--tesseract-cmd")
     parser.add_argument("--window-title", help="独立 App 窗口标题中的文字")
     parser.add_argument(
@@ -229,35 +281,50 @@ def main() -> None:
     pyautogui.PAUSE = 0.03
     pyautogui.FAILSAFE = True
     box = select_game_box(args.window_title, args.fullscreen, args.wait_seconds)
+    diagnostics = DiagnosticRecorder(args.diagnostics)
 
     if not args.no_start:
         click(box, 0.500, 0.420)
         time.sleep(0.30)
 
     for round_number in range(1, 10_000):
+        round_started = time.perf_counter()
+        round_dir = diagnostics.round_dir(round_number)
         if timeout_page(box):
+            diagnostics.save_screen("timeout.png", box, round_dir)
+            diagnostics.event({"round": round_number, "state": "timeout", "elapsed_ms": round((time.perf_counter() - round_started) * 1000)})
             print("Detected timeout page; stopped without restarting.")
             return
 
         level = read_level_dialog(box)
         if level is not None:
+            diagnostics.save_screen("result.png", box, round_dir)
+            diagnostics.event({"round": round_number, "state": "result", "level": level, "elapsed_ms": round((time.perf_counter() - round_started) * 1000)})
             print(f"Detected result dialog: level {level}; stopped without Continue.")
             return
 
         number = None
         prompt_text = ""
-        for _ in range(20):
+        for attempt in range(20):
             if timeout_page(box):
+                diagnostics.save_screen("timeout.png", box, round_dir)
+                diagnostics.event({"round": round_number, "state": "timeout", "attempt": attempt + 1, "elapsed_ms": round((time.perf_counter() - round_started) * 1000)})
                 print("Detected timeout page; stopped without restarting.")
                 return
-            prompt_text, number = read_number(box)
+            attempt_dir = round_dir / f"attempt_{attempt + 1:02d}" if round_dir is not None else None
+            prompt_text, number = read_number(box, attempt_dir)
+            diagnostics.event({"round": round_number, "state": "ocr", "attempt": attempt + 1, "text": prompt_text, "number": number, "elapsed_ms": round((time.perf_counter() - round_started) * 1000)})
             if number is not None:
                 break
             time.sleep(0.12)
         if number is None:
             if timeout_page(box):
+                diagnostics.save_screen("timeout.png", box, round_dir)
+                diagnostics.event({"round": round_number, "state": "timeout", "elapsed_ms": round((time.perf_counter() - round_started) * 1000)})
                 print("Detected timeout page; stopped without restarting.")
                 return
+            diagnostics.save_screen("ocr_failed.png", box, round_dir)
+            diagnostics.event({"round": round_number, "state": "ocr_failed", "text": prompt_text, "elapsed_ms": round((time.perf_counter() - round_started) * 1000)})
             raise RuntimeError(f"OCR could not read the prompt. OCR text was: {prompt_text!r}")
 
         bits = format(number, "08b")
@@ -267,11 +334,17 @@ def main() -> None:
 
         solve(box, number)
         time.sleep(0.18)
+        diagnostics.save_screen("after_submit.png", box, round_dir)
+        diagnostics.event({"round": round_number, "state": "submitted", "number": number, "bits": bits, "elapsed_ms": round((time.perf_counter() - round_started) * 1000)})
         if timeout_page(box):
+            diagnostics.save_screen("timeout.png", box, round_dir)
+            diagnostics.event({"round": round_number, "state": "timeout", "elapsed_ms": round((time.perf_counter() - round_started) * 1000)})
             print("Detected timeout page; stopped without restarting.")
             return
         level = read_level_dialog(box)
         if level is not None:
+            diagnostics.save_screen("result.png", box, round_dir)
+            diagnostics.event({"round": round_number, "state": "result", "level": level, "elapsed_ms": round((time.perf_counter() - round_started) * 1000)})
             print(f"Reached level {level}; stopped without Continue.")
             return
 

@@ -47,6 +47,14 @@ Tesseract 会安装到项目内 `.tools\tesseract`，并下载 `chi_sim` 中文�
 .\automation\run.ps1 --window-title "你的窗口标题" --no-start --dry-run
 ```
 
+真实运行排查 OCR 或超时时，开启诊断模式：
+
+```powershell
+.\automation\run.ps1 --fullscreen --wait-seconds 5 --diagnostics
+```
+
+诊断文件会保存到 `automation\tests\output\live\<时间戳>`，包括每次题目截图、题目裁剪图、OpenCV 处理后的 Tesseract 输入图、各 PSM OCR 文本、提交后截图和 `events.jsonl`。
+
 ## 依赖说明
 
 - `.venv`：Python 虚拟环境，不污染系统 Python。
