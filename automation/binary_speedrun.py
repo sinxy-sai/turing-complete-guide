@@ -163,6 +163,22 @@ def capture(box: Box):
     return pyautogui.screenshot(region=(box.left, box.top, box.width, box.height))
 
 
+def ocr_number(image, psm: int) -> tuple[str, int | None, float]:
+    """Read a number and return its text, parsed value, and OCR confidence."""
+    config = f"--psm {psm} -c tessedit_char_whitelist=0123456789"
+    data = pytesseract.image_to_data(
+        image, lang="eng", config=config, output_type=pytesseract.Output.DICT
+    )
+    recognized = [
+        (text.strip(), float(confidence))
+        for text, confidence in zip(data["text"], data["conf"])
+        if text.strip()
+    ]
+    text = " ".join(item[0] for item in recognized)
+    confidence = max((item[1] for item in recognized), default=-1.0)
+    return text, prompt_number(text), confidence
+
+
 def read_number(box: Box, diagnostic_dir: Path | None = None) -> tuple[str, int | None]:
     image = capture(box)
     prompt_image = box.crop(image, 0.30, 0.30, 0.70, 0.56)
@@ -172,45 +188,46 @@ def read_number(box: Box, diagnostic_dir: Path | None = None) -> tuple[str, int 
         prompt_image.save(diagnostic_dir / "prompt_crop.png")
     digit_image = orange_digit_image(prompt_image)
     if digit_image is not None:
-        digit_count = orange_digit_count(prompt_image)
         if diagnostic_dir is not None:
             digit_image.save(diagnostic_dir / "tesseract_input.png")
+        digit_count = orange_digit_count(prompt_image)
         attempts = []
+        candidates: list[tuple[str, int, float, int]] = []
         for psm in (7, 10, 8):
-            text = pytesseract.image_to_string(
-                digit_image,
-                lang="eng",
-                config=f"--psm {psm} -c tessedit_char_whitelist=0123456789",
-            ).strip()
-            attempts.append(text)
-            number = prompt_number(text)
-            if number is not None and len(str(number)) < digit_count:
-                if diagnostic_dir is not None:
-                    (diagnostic_dir / "ocr_attempts.txt").write_text(
-                        "\n".join(
-                            f"psm={mode}: {value!r}"
-                            + (
-                                f" (rejected: expected {digit_count} digits)"
-                                if index == len(attempts) - 1
-                                else ""
-                            )
-                            for index, (mode, value) in enumerate(
-                                zip((7, 10, 8), attempts)
-                            )
-                        )
-                        + "\n",
-                        encoding="utf-8",
-                    )
-                continue
+            text, number, confidence = ocr_number(digit_image, psm)
+            attempts.append((psm, text, number, confidence))
+            if number is not None and len(str(number)) == digit_count:
+                candidates.append((text, number, confidence, psm))
+
+            if psm == 7 and candidates and confidence >= 60:
+                break
+            if psm == 10 and candidates and attempts[0][2] == number and confidence >= 60:
+                break
+
+        if candidates:
+            baseline = candidates[0]
+            selected = baseline
+            if len(candidates) >= 2 and candidates[-1][3] == 8:
+                fallback = candidates[-1]
+                # Tesseract's sparse-layout mode often turns a leading 1 into
+                # 4 (for example 17 -> 47). Keep the baseline in that case.
+                leading_one_confusion = (
+                    str(baseline[1]).startswith("1")
+                    and str(fallback[1]).startswith("4")
+                )
+                if not leading_one_confusion and fallback[2] > baseline[2]:
+                    selected = fallback
             if diagnostic_dir is not None:
                 (diagnostic_dir / "ocr_attempts.txt").write_text(
-                    "\n".join(f"psm={mode}: {value!r}" for mode, value in zip((7, 10, 8), attempts))
+                    "\n".join(
+                        f"psm={psm}: {text!r}, parsed={number!r}, confidence={confidence:.0f}"
+                        for psm, text, number, confidence in attempts
+                    )
                     + "\n",
                     encoding="utf-8",
                 )
-            if number is not None:
-                return text, number
-        return " | ".join(attempts), None
+            return selected[0], selected[1]
+        return " | ".join(item[1] for item in attempts), None
 
     # During the transition between rounds the prompt area can contain only
     # background/animation pixels.  OCR on that full crop may find unrelated
