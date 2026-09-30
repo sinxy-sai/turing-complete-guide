@@ -9,6 +9,21 @@
 .\.venv\Scripts\python.exe automation\tests\test_preprocess_ocr.py automation\tests\input\79.png --expected 79
 ```
 
+页面状态回归测试：
+
+```powershell
+.\.venv\Scripts\python.exe automation\tests\test_states.py
+```
+
+它会测试 `ready`、普通题目、等级结果弹窗和超时页面，并将状态与 OCR 原文写入 `output\states\results.json` 和 `results.txt`。
+
+当前输入样本包括：
+
+- `ready.png`：准备页面，包含“准备好了吗？”和“开始”。
+- `prompt_1.png`、`58.png`、`79.png`：题目页面。
+- `result_level4.png`：等级结果弹窗。
+- `timeout_level3.png`：超时页面。
+
 产物按样本名写入 `output\<sample>`，例如 `output\58`：
 
 - `01_prompt_crop.png`：按脚本比例裁剪的题目区域。
