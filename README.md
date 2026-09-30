@@ -4,19 +4,39 @@
 
 :video_game: Automation for the “Binary Speed Calculation” level in the standalone Turing Complete application.
 
-<a href="https://github.com/sinxy-sai/turing-complete-guide"><img src="https://img.shields.io/badge/Turing%20Complete-2.1.334-4B5563?style=for-the-badge" alt="Turing Complete 2.1.334"></a>
-<a href="https://www.microsoft.com/windows"><img src="https://img.shields.io/badge/Windows-10%2B-0078D6?logo=windows&logoColor=white&style=for-the-badge" alt="Windows 10 or later"></a>
-<a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white&style=for-the-badge" alt="Python 3.x"></a>
-<a href="https://opencv.org/"><img src="https://img.shields.io/badge/OpenCV-4.x-5C3EE8?logo=opencv&logoColor=white&style=for-the-badge" alt="OpenCV 4.x"></a>
-<a href="https://github.com/RapidAI/RapidOCR"><img src="https://img.shields.io/badge/RapidOCR-ONNX-FF6F00?style=for-the-badge" alt="RapidOCR ONNX"></a>
-<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-750014?style=for-the-badge" alt="MIT License"></a>
-<a href="docs/changelog.md"><img src="https://img.shields.io/badge/Changelog-view-6B7280?style=for-the-badge" alt="Changelog"></a>
+<a href="https://github.com/sinxy-sai/turing-complete-guide"><img src="https://img.shields.io/badge/Turing%20Complete-2.1.334-4B5563?style=flat-square" alt="Turing Complete 2.1.334"></a>
+<a href="https://www.microsoft.com/windows"><img src="https://img.shields.io/badge/Windows-10%2B-0078D6?logo=windows&logoColor=white&style=flat-square" alt="Windows 10 or later"></a>
+<a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white&style=flat-square" alt="Python 3.x"></a>
+<a href="https://opencv.org/"><img src="https://img.shields.io/badge/OpenCV-4.x-5C3EE8?logo=opencv&logoColor=white&style=flat-square" alt="OpenCV 4.x"></a>
+<a href="https://github.com/RapidAI/RapidOCR"><img src="https://img.shields.io/badge/RapidOCR-ONNX-FF6F00?style=flat-square" alt="RapidOCR ONNX"></a>
+<a href="LICENSE"><img src="https://img.shields.io/github/license/sinxy-sai/turing-complete-guide.svg?style=flat-square" alt="GitHub license"></a>
+<a href="docs/changelog.md"><img src="https://img.shields.io/badge/Changelog-view-6B7280?style=flat-square" alt="Changelog"></a>
+<a href="https://github.com/sinxy-sai/turing-complete-guide/stargazers"><img src="https://img.shields.io/github/stars/sinxy-sai/turing-complete-guide?style=flat-square&logo=github" alt="GitHub stars"></a>
+<a href="https://github.com/sinxy-sai/turing-complete-guide/commits/main"><img src="https://img.shields.io/github/last-commit/sinxy-sai/turing-complete-guide?style=flat-square&logo=git" alt="Last commit"></a>
 
 **English** | [简体中文](README.zh-CN.md)
 
 </div>
 
+<p align="center">
+  <img
+    src="https://socialify.git.ci/sinxy-sai/turing-complete-guide/image?description=1&font=Jost&forks=1&issues=1&language=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fsinxy-sai%2Fturing-complete-guide%2Fmain%2Fdocs%2Fassets%2Fbinary-speed-logo.svg&name=1&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Dark"
+    alt="Turing Complete Guide Socialify preview"
+    width="640"
+  />
+</p>
+
+<p align="center">
+  <a href="#installation">🚀 Get Started</a> ·
+  <a href="#usage">▶️ Run</a> ·
+  <a href="#tests">🧪 Test</a> ·
+  <a href="docs/binary-speedrun.md">📚 Documentation</a> ·
+  <a href="docs/changelog.md">📝 Changelog</a>
+</p>
+
 ## :sparkles: Overview
+
+> **One screenshot in, one correct 8-bit answer out.**
 
 This project captures the game screen, recognizes the decimal prompt, converts it to an 8-bit binary value, clicks the corresponding bit buttons, and submits the answer.
 
@@ -45,6 +65,10 @@ The project targets Windows desktop environments. Python dependencies, including
   </tr>
 </table>
 
+<p align="center">
+  <sub>Built for Turing Complete 2.1.334 · Windows desktop · RapidOCR + OpenCV</sub>
+</p>
+
 > :warning: This is an independent learning and automation project. It is not affiliated with, sponsored by, or endorsed by the creators of Turing Complete.
 
 ## :rocket: Features
@@ -57,6 +81,8 @@ The project targets Windows desktop environments. Python dependencies, including
 - :hourglass_flowing_sand: Stops when the timeout page is detected instead of restarting the game.
 - :test_tube: Provides screenshot regression tests and live diagnostic recording.
 
+<a id="installation"></a>
+
 ## :hammer_and_wrench: Installation
 
 Run these commands from the repository root:
@@ -66,6 +92,8 @@ Run these commands from the repository root:
 ```
 
 The setup command creates `.venv` and installs the Python dependencies, including RapidOCR and its ONNX runtime.
+
+<a id="usage"></a>
 
 ## :arrow_forward: Usage
 
@@ -106,6 +134,8 @@ Use `--window-title` when the window title differs from the default:
 
 Diagnostic data is written to `automation\tests\output\live\<timestamp>`. These generated files are ignored by Git.
 Each OCR attempt records both `rapidocr_input.png` and `rapidocr_focus_input.png`, representing the original and focused color crops.
+
+<a id="tests"></a>
 
 ## :test_tube: Tests
 
@@ -154,6 +184,8 @@ See the [Changelog](docs/changelog.md) for the project development history.
 │       ├── test_states.py
 │       └── test_preprocess_ocr.py
 ├── docs/
+│   ├── assets/
+│   │   └── binary-speed-logo.svg # Socialify project logo
 │   └── binary-speedrun.md       # Technical documentation
 ├── README.md                    # English documentation
 ├── README.zh-CN.md              # Simplified Chinese documentation

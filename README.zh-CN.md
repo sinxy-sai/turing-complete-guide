@@ -4,19 +4,39 @@
 
 :video_game: 用于自动完成 Turing Complete 独立应用“二进制速算”关卡的工具。
 
-<a href="https://github.com/sinxy-sai/turing-complete-guide"><img src="https://img.shields.io/badge/Turing%20Complete-2.1.334-4B5563?style=for-the-badge" alt="Turing Complete 2.1.334"></a>
-<a href="https://www.microsoft.com/windows"><img src="https://img.shields.io/badge/Windows-10%2B-0078D6?logo=windows&logoColor=white&style=for-the-badge" alt="Windows 10 或更高版本"></a>
-<a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white&style=for-the-badge" alt="Python 3.x"></a>
-<a href="https://opencv.org/"><img src="https://img.shields.io/badge/OpenCV-4.x-5C3EE8?logo=opencv&logoColor=white&style=for-the-badge" alt="OpenCV 4.x"></a>
-<a href="https://github.com/RapidAI/RapidOCR"><img src="https://img.shields.io/badge/RapidOCR-ONNX-FF6F00?style=for-the-badge" alt="RapidOCR ONNX"></a>
-<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-750014?style=for-the-badge" alt="MIT License"></a>
-<a href="docs/changelog.md"><img src="https://img.shields.io/badge/Changelog-%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97-6B7280?style=for-the-badge" alt="更新日志"></a>
+<a href="https://github.com/sinxy-sai/turing-complete-guide"><img src="https://img.shields.io/badge/Turing%20Complete-2.1.334-4B5563?style=flat-square" alt="Turing Complete 2.1.334"></a>
+<a href="https://www.microsoft.com/windows"><img src="https://img.shields.io/badge/Windows-10%2B-0078D6?logo=windows&logoColor=white&style=flat-square" alt="Windows 10 或更高版本"></a>
+<a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white&style=flat-square" alt="Python 3.x"></a>
+<a href="https://opencv.org/"><img src="https://img.shields.io/badge/OpenCV-4.x-5C3EE8?logo=opencv&logoColor=white&style=flat-square" alt="OpenCV 4.x"></a>
+<a href="https://github.com/RapidAI/RapidOCR"><img src="https://img.shields.io/badge/RapidOCR-ONNX-FF6F00?style=flat-square" alt="RapidOCR ONNX"></a>
+<a href="LICENSE"><img src="https://img.shields.io/github/license/sinxy-sai/turing-complete-guide.svg?style=flat-square" alt="GitHub license"></a>
+<a href="docs/changelog.md"><img src="https://img.shields.io/badge/Changelog-%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97-6B7280?style=flat-square" alt="更新日志"></a>
+<a href="https://github.com/sinxy-sai/turing-complete-guide/stargazers"><img src="https://img.shields.io/github/stars/sinxy-sai/turing-complete-guide?style=flat-square&logo=github" alt="GitHub stars"></a>
+<a href="https://github.com/sinxy-sai/turing-complete-guide/commits/main"><img src="https://img.shields.io/github/last-commit/sinxy-sai/turing-complete-guide?style=flat-square&logo=git" alt="最近提交"></a>
 
 [English](README.md) | **简体中文**
 
 </div>
 
+<p align="center">
+  <img
+    src="https://socialify.git.ci/sinxy-sai/turing-complete-guide/image?description=1&font=Jost&forks=1&issues=1&language=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fsinxy-sai%2Fturing-complete-guide%2Fmain%2Fdocs%2Fassets%2Fbinary-speed-logo.svg&name=1&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Dark"
+    alt="Turing Complete Guide Socialify 预览图"
+    width="640"
+  />
+</p>
+
+<p align="center">
+  <a href="#installation">🚀 开始使用</a> ·
+  <a href="#usage">▶️ 运行</a> ·
+  <a href="#tests">🧪 测试</a> ·
+  <a href="docs/binary-speedrun.md">📚 技术文档</a> ·
+  <a href="docs/changelog.md">📝 更新日志</a>
+</p>
+
 ## :sparkles: 项目简介
+
+> **输入一张截图，输出一个正确的 8 位二进制答案。**
 
 本项目通过屏幕截图识别游戏中的十进制题目，将数字转换为 8 位二进制表示，自动点击对应的位按钮并提交答案。
 
@@ -45,6 +65,10 @@
   </tr>
 </table>
 
+<p align="center">
+  <sub>基于 Turing Complete 2.1.334 · Windows 桌面环境 · RapidOCR + OpenCV</sub>
+</p>
+
 > :warning: 本项目是独立的个人学习和自动化实验项目，与 Turing Complete 的开发者或发行方没有隶属、赞助或官方合作关系。
 
 ## :rocket: 主要功能
@@ -57,6 +81,8 @@
 - :hourglass_flowing_sand: 检测到超时页面后停止，不重新启动游戏。
 - :test_tube: 提供截图回归测试和实时诊断记录。
 
+<a id="installation"></a>
+
 ## :hammer_and_wrench: 安装
 
 在仓库根目录执行：
@@ -66,6 +92,8 @@
 ```
 
 该命令会创建 `.venv` 并安装 Python 依赖，包括 RapidOCR 和 ONNX Runtime。
+
+<a id="usage"></a>
 
 ## :arrow_forward: 使用方法
 
@@ -106,6 +134,8 @@
 
 诊断数据保存在 `automation\tests\output\live\<timestamp>`，并已加入 Git 忽略规则。
 每次 OCR 尝试都会保存 `rapidocr_input.png` 和 `rapidocr_focus_input.png`，分别对应原始和彩色焦点裁剪图。
+
+<a id="tests"></a>
 
 ## :test_tube: 测试
 
@@ -154,6 +184,8 @@
 │       ├── test_states.py
 │       └── test_preprocess_ocr.py
 ├── docs/
+│   ├── assets/
+│   │   └── binary-speed-logo.svg # Socialify 项目 Logo
 │   └── binary-speedrun.md       # 技术文档
 ├── README.md                    # 英文文档
 ├── README.zh-CN.md              # 简体中文文档
