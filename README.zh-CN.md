@@ -10,8 +10,9 @@
 <a href="https://opencv.org/"><img src="https://img.shields.io/badge/OpenCV-4.x-5C3EE8?logo=opencv&logoColor=white&style=for-the-badge" alt="OpenCV 4.x"></a>
 <a href="https://github.com/tesseract-ocr/tesseract"><img src="https://img.shields.io/badge/Tesseract-OCR-4285F4?style=for-the-badge" alt="Tesseract OCR"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-750014?style=for-the-badge" alt="MIT License"></a>
+<a href="docs/changelog.md"><img src="https://img.shields.io/badge/Changelog-%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97-6B7280?style=for-the-badge" alt="更新日志"></a>
 
-[English](README.md) · **简体中文**
+[English](README.md) | **简体中文**
 
 </div>
 
@@ -126,6 +127,8 @@
 
 详细的处理流程、状态判断、OpenCV 预处理和 OCR 设计见：[二进制速算自动化技术文档](docs/binary-speedrun.md)。
 
+项目开发历史见：[Changelog 更新日志](docs/changelog.md)。
+
 ## :file_folder: 项目结构
 
 ```text
@@ -160,4 +163,4 @@
 - OpenCV 图像处理文档：[Image Processing in OpenCV](https://docs.opencv.org/4.x/d2/d96/tutorial_py_table_of_contents_imgproc.html)
 - PyTesseract：[madmaze/pytesseract](https://github.com/madmaze/pytesseract)
 - PyAutoGUI：[pyautogui.readthedocs.io](https://pyautogui.readthedocs.io/)
-- Badge 参考：[sinxy-sai/github-badge-collection](https://github.com/sinxy-sai/github-badge-collection)
+- Badge 参考：[pudding0503/github-badge-collection](https://github.com/pudding0503/github-badge-collection)

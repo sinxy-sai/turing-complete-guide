@@ -10,8 +10,9 @@
 <a href="https://opencv.org/"><img src="https://img.shields.io/badge/OpenCV-4.x-5C3EE8?logo=opencv&logoColor=white&style=for-the-badge" alt="OpenCV 4.x"></a>
 <a href="https://github.com/tesseract-ocr/tesseract"><img src="https://img.shields.io/badge/Tesseract-OCR-4285F4?style=for-the-badge" alt="Tesseract OCR"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-750014?style=for-the-badge" alt="MIT License"></a>
+<a href="docs/changelog.md"><img src="https://img.shields.io/badge/Changelog-view-6B7280?style=for-the-badge" alt="Changelog"></a>
 
-**English** · [简体中文](README.zh-CN.md)
+**English** | [简体中文](README.zh-CN.md)
 
 </div>
 
@@ -126,6 +127,8 @@ Input screenshots are stored in `automation\tests\input`. Generated test output 
 
 See the [Binary Speedrun Automation Technical Documentation](docs/binary-speedrun.md) for the processing flow, state detection, OpenCV preprocessing, and OCR design.
 
+See the [Changelog](docs/changelog.md) for the project development history.
+
 ## :file_folder: Project Structure
 
 ```text
@@ -160,4 +163,4 @@ This project is licensed under the [MIT License](LICENSE). Please follow the ter
 - OpenCV image processing documentation: [Image Processing in OpenCV](https://docs.opencv.org/4.x/d2/d96/tutorial_py_table_of_contents_imgproc.html)
 - PyTesseract: [madmaze/pytesseract](https://github.com/madmaze/pytesseract)
 - PyAutoGUI: [pyautogui.readthedocs.io](https://pyautogui.readthedocs.io/)
-- Badge reference: [sinxy-sai/github-badge-collection](https://github.com/sinxy-sai/github-badge-collection)
+- Badge reference: [pudding0503/github-badge-collection](https://github.com/pudding0503/github-badge-collection)
