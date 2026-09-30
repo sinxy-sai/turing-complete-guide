@@ -186,10 +186,15 @@ def read_number(box: Box, diagnostic_dir: Path | None = None) -> tuple[str, int 
                 return text, number
         return " | ".join(attempts), None
 
-    text = ocr(prompt_image)
+    # During the transition between rounds the prompt area can contain only
+    # background/animation pixels.  OCR on that full crop may find unrelated
+    # digits (for example a stray ``0``) and turn a blank frame into a wrong
+    # answer.  Wait for the orange prompt region to appear instead.
     if diagnostic_dir is not None:
-        (diagnostic_dir / "ocr_attempts.txt").write_text(f"fallback={text!r}\n", encoding="utf-8")
-    return text, prompt_number(text)
+        (diagnostic_dir / "ocr_attempts.txt").write_text(
+            "no orange digit region found; retrying\n", encoding="utf-8"
+        )
+    return "", None
 
 
 class DiagnosticRecorder:
