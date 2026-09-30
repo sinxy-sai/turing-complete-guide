@@ -152,6 +152,13 @@ def orange_digit_image(image):
     return Image.fromarray(cropped)
 
 
+def orange_digit_count(image) -> int:
+    """Count the independent digit glyphs in the orange prompt mask."""
+    _, _, mask = orange_digit_masks(image)
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    return sum(cv2.contourArea(contour) >= 500 for contour in contours)
+
+
 def capture(box: Box):
     return pyautogui.screenshot(region=(box.left, box.top, box.width, box.height))
 
@@ -165,6 +172,7 @@ def read_number(box: Box, diagnostic_dir: Path | None = None) -> tuple[str, int 
         prompt_image.save(diagnostic_dir / "prompt_crop.png")
     digit_image = orange_digit_image(prompt_image)
     if digit_image is not None:
+        digit_count = orange_digit_count(prompt_image)
         if diagnostic_dir is not None:
             digit_image.save(diagnostic_dir / "tesseract_input.png")
         attempts = []
@@ -175,13 +183,31 @@ def read_number(box: Box, diagnostic_dir: Path | None = None) -> tuple[str, int 
                 config=f"--psm {psm} -c tessedit_char_whitelist=0123456789",
             ).strip()
             attempts.append(text)
+            number = prompt_number(text)
+            if number is not None and len(str(number)) < digit_count:
+                if diagnostic_dir is not None:
+                    (diagnostic_dir / "ocr_attempts.txt").write_text(
+                        "\n".join(
+                            f"psm={mode}: {value!r}"
+                            + (
+                                f" (rejected: expected {digit_count} digits)"
+                                if index == len(attempts) - 1
+                                else ""
+                            )
+                            for index, (mode, value) in enumerate(
+                                zip((7, 10, 8), attempts)
+                            )
+                        )
+                        + "\n",
+                        encoding="utf-8",
+                    )
+                continue
             if diagnostic_dir is not None:
                 (diagnostic_dir / "ocr_attempts.txt").write_text(
                     "\n".join(f"psm={mode}: {value!r}" for mode, value in zip((7, 10, 8), attempts))
                     + "\n",
                     encoding="utf-8",
                 )
-            number = prompt_number(text)
             if number is not None:
                 return text, number
         return " | ".join(attempts), None
