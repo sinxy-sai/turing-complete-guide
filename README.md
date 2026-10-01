@@ -5,7 +5,7 @@
 :video_game: Automation for the “Binary Speed Calculation” level in the standalone Turing Complete application.
 
 <a href="https://github.com/sinxy-sai/turing-complete-guide"><img src="https://img.shields.io/badge/Turing%20Complete-2.1.334-4B5563?style=flat-square" alt="Turing Complete 2.1.334"></a>
-<a href="https://www.microsoft.com/windows"><img src="https://img.shields.io/badge/Windows-10%2B-0078D6?logo=windows&logoColor=white&style=flat-square" alt="Windows 10 or later"></a>
+<a href="https://www.microsoft.com/windows"><img src="https://img.shields.io/badge/Windows-10%2B-0078D6?style=flat-square&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI%2BPHBhdGggZmlsbD0iI0YzNTMyNSIgZD0iTTEgMi43IDExIDEuM3YxMEgxeiIvPjxwYXRoIGZpbGw9IiM4MUJDMDYiIGQ9Ik0xMyAxIDIzIDB2MTFIMTN6Ii8%2BPHBhdGggZmlsbD0iIzA1QTZGMCIgZD0iTTEgMTNoMTB2MTBMMSAyMS43eiIvPjxwYXRoIGZpbGw9IiNGRkJBMDgiIGQ9Ik0xMyAxM2gxMHYxMWwtMTAtMS4zeiIvPjwvc3ZnPg%3D%3D" alt="Windows 10 or later"></a>
 <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white&style=flat-square" alt="Python 3.x"></a>
 <a href="https://opencv.org/"><img src="https://img.shields.io/badge/OpenCV-4.x-5C3EE8?logo=opencv&logoColor=white&style=flat-square" alt="OpenCV 4.x"></a>
 <a href="https://github.com/RapidAI/RapidOCR"><img src="https://img.shields.io/badge/RapidOCR-ONNX-FF6F00?style=flat-square" alt="RapidOCR ONNX"></a>
